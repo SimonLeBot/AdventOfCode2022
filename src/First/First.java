@@ -17,18 +17,18 @@ public class First {
         maxSums.add(0);
         for (String calories : input) {
             if (calories.isBlank()) {
-                updateMaxs(currentSum, maxSums);
+                updateMaxes(currentSum, maxSums);
                 currentSum = 0;
             } else {
                 currentSum += Integer.parseInt(calories);
             }
         }
-        updateMaxs(currentSum, maxSums);
+        updateMaxes(currentSum, maxSums);
 
         System.out.println("The max calories is "  + maxSums.stream().mapToInt(Integer::intValue).sum());
     }
 
-    private static void updateMaxs(int currentSum, List<Integer> maxSums) {
+    private static void updateMaxes(int currentSum, List<Integer> maxSums) {
         @SuppressWarnings("OptionalGetWithoutIsPresent")
         int minMax = maxSums.stream().min(Integer::compareTo).get();
         if (currentSum > minMax) {

@@ -17,38 +17,48 @@ public class RockPaperScissor {
     private static class Game {
         final Shape theirShape;
         final Shape myShape;
+        final int scorePoints;
 
-        public Game(String theirShape, String myShape) {
+        public Game(String theirShape, String result) {
             this.theirShape = getShape(theirShape);
-            this.myShape = getShape(myShape);
+            switch (result) {
+                case "X":
+                    scorePoints = 0; break;
+                case "Y":
+                    scorePoints = 3; break;
+                case "Z":
+                    scorePoints = 6; break;
+                default: throw new IllegalArgumentException("Incorrect input");
+            }
+            this.myShape = getShapeToAchieveResult();
         }
 
-        private int getScorePoints() {
-            switch (myShape) {
+        private Shape getShapeToAchieveResult() {
+            switch (theirShape) {
                 case Rock:
-                    switch (theirShape) {
-                        case Rock: return 3;
-                        case Paper: return 0;
-                        case Scissor: return 6;
+                    switch (scorePoints) {
+                        case 6: return Shape.Paper;
+                        case 3: return Shape.Rock;
+                        case 0: return Shape.Scissor;
                     }
                 case Paper:
-                    switch (theirShape) {
-                        case Rock: return 6;
-                        case Paper: return 3;
-                        case Scissor: return 0;
+                    switch (scorePoints) {
+                        case 6: return Shape.Scissor;
+                        case 3: return Shape.Paper;
+                        case 0: return Shape.Rock;
                     }
                 case Scissor:
-                    switch (theirShape) {
-                        case Rock: return 0;
-                        case Paper: return 6;
-                        case Scissor: return 3;
+                    switch (scorePoints) {
+                        case 6: return Shape.Rock;
+                        case 3: return Shape.Scissor;
+                        case 0: return Shape.Paper;
                     }
             }
             throw new IllegalArgumentException("Incorrect input");
         }
 
         public int getNumPoints() {
-            return getScorePoints() + myShape.numPoints;
+            return scorePoints + myShape.numPoints;
         }
     }
 

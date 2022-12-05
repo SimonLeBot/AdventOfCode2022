@@ -9,10 +9,10 @@ public class DuplicateCleaning {
     public static void main(String[] args) throws IOException {
         final long count = Files.readAllLines(Paths.get("src/day4/input.txt")).stream()
                 .map(Pair::new)
-                .filter(Pair::containUnnecessaryAssignment)
+                .filter(Pair::overlap)
                 .count();
 
-        System.out.println(count + " pairs have unnecessary assignments");
+        System.out.println(count + " pairs overlap");
     }
 
     private static class Pair {
@@ -26,6 +26,10 @@ public class DuplicateCleaning {
             return assignment1.contain(assignment2) || assignment2.contain(assignment1);
         }
 
+        public boolean overlap() {
+            return assignment1.overlap(assignment2);
+        }
+
     }
 
     private static class Assignment {
@@ -37,6 +41,10 @@ public class DuplicateCleaning {
 
         public boolean contain(Assignment assignment2) {
             return this.start <= assignment2.start && this.end >= assignment2.end;
+        }
+
+        public boolean overlap(Assignment assignment2) {
+            return this.start <= assignment2.end && this.end >= assignment2.start;
         }
     }
 }

@@ -30,8 +30,9 @@ public class CrateReOrganization {
     private static void moveBetweenStacks(List<List<String>> stacks, int numItems, int sourceStackIndex, int targetStackIndex) {
         List<String> sourceStack = stacks.get(sourceStackIndex);
         List<String> targetStack = stacks.get(targetStackIndex);
+        int indexOfInterest = sourceStack.size() - numItems;
         for (int i = 0 ; i < numItems ; i++) {
-            targetStack.add(sourceStack.remove(sourceStack.size() - 1));
+            targetStack.add(sourceStack.remove(indexOfInterest));
         }
     }
 

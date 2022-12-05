@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class RuckSackArrangement {
 
@@ -39,13 +40,11 @@ public class RuckSackArrangement {
         }
     }
     private static class RuckSack{
-        final Set<Character> content = new HashSet<>();
+        final Set<Character> content;
         final Compartment compartment1, compartment2;
 
         public RuckSack(String content) {
-            for (char c : content.toCharArray()) {
-                this.content.add(c);
-            }
+            this.content = content.chars().mapToObj(c -> (char)c).collect(Collectors.toSet());
             compartment1 = new Compartment(content.substring(0, content.length() / 2));
             compartment2 = new Compartment(content.substring(content.length() / 2));
         }
@@ -63,12 +62,10 @@ public class RuckSackArrangement {
     }
 
     private static class Compartment {
-        final Set<Character> content = new HashSet<>();
+        final Set<Character> content;
 
         public Compartment(String content) {
-            for (char c : content.toCharArray()) {
-                this.content.add(c);
-            }
+            this.content = content.chars().mapToObj(c -> (char)c).collect(Collectors.toSet());
         }
 
         public Character getCommonCharacter(Compartment otherCompartment) {

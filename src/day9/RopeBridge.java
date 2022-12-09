@@ -16,9 +16,8 @@ public class RopeBridge {
                 .map(RopeBridge::toMove)
                 .collect(Collectors.toList());
 
-        final Set<Bridge.Node> distinctTailNodes = new Bridge().run(moves).distinctTailNodes;
-        final int numPositionsVisited = distinctTailNodes.size();
-        System.out.println(numPositionsVisited + " positions were visited.");
+        System.out.println(new Bridge(2).run(moves).distinctTailNodes.size() + " positions were visited with rope length 2.");
+        System.out.println(new Bridge(10).run(moves).distinctTailNodes.size() + " positions were visited with rope length 10.");
     }
 
     private static Bridge.Move toMove(String line) {
@@ -35,15 +34,11 @@ public class RopeBridge {
     }
 
     public static class Bridge {
-        Node head, tail;
         Set<Node> distinctTailNodes = new HashSet<>();
         List<Node> rope = new ArrayList<>();
 
-        public Bridge() {
-            head = new Node(0, 0);
-            tail = new Node(0, 0);
-
-            for (int i = 0 ; i < 10 ; i++) {
+        public Bridge(int ropeLength) {
+            for (int i = 0 ; i < ropeLength ; i++) {
                 rope.add(new Node(0, 0));
             }
         }
@@ -76,7 +71,7 @@ public class RopeBridge {
 
         private enum Direction{
             Up, Down, Left, Right
-        };
+        }
 
         private static class Move {
             final int numSteps;

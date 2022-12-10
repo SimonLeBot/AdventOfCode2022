@@ -23,19 +23,18 @@ public class RopeBridge {
     private static Bridge.Move toMove(String line) {
         final String direction = line.split(" ")[0];
         final int numSteps = Integer.parseInt(line.split(" ")[1]);
-        switch (direction) {
-            case "U": return new Bridge.Move(numSteps, Bridge.Direction.Up);
-            case "D": return new Bridge.Move(numSteps, Bridge.Direction.Down);
-            case "L": return new Bridge.Move(numSteps, Bridge.Direction.Left);
-            case "R": return new Bridge.Move(numSteps, Bridge.Direction.Right);
-            default:
-                throw new IllegalArgumentException("Invalid input : " + line);
-        }
+        return switch (direction) {
+            case "U" -> new Bridge.Move(numSteps, Bridge.Direction.Up);
+            case "D" -> new Bridge.Move(numSteps, Bridge.Direction.Down);
+            case "L" -> new Bridge.Move(numSteps, Bridge.Direction.Left);
+            case "R" -> new Bridge.Move(numSteps, Bridge.Direction.Right);
+            default -> throw new IllegalArgumentException("Invalid input : " + line);
+        };
     }
 
     public static class Bridge {
-        Set<Node> distinctTailNodes = new HashSet<>();
-        List<Node> rope = new ArrayList<>();
+        final Set<Node> distinctTailNodes = new HashSet<>();
+        final List<Node> rope = new ArrayList<>();
 
         public Bridge(int ropeLength) {
             for (int i = 0 ; i < ropeLength ; i++) {
@@ -52,12 +51,12 @@ public class RopeBridge {
             for (int step = 0 ; step < move.numSteps ; step++) {
                 Node newHeadNode = new Node(0, 0);
                 final Node currentHeadNode = rope.get(0);
-                switch (move.direction) {
-                    case Up: newHeadNode = new Node(currentHeadNode.x, currentHeadNode.y - 1); break;
-                    case Down: newHeadNode = new Node(currentHeadNode.x, currentHeadNode.y + 1); break;
-                    case Left: newHeadNode = new Node(currentHeadNode.x - 1, currentHeadNode.y); break;
-                    case Right: newHeadNode = new Node(currentHeadNode.x + 1, currentHeadNode.y); break;
-                }
+                newHeadNode = switch (move.direction) {
+                    case Up -> new Node(currentHeadNode.x, currentHeadNode.y - 1);
+                    case Down -> new Node(currentHeadNode.x, currentHeadNode.y + 1);
+                    case Left -> new Node(currentHeadNode.x - 1, currentHeadNode.y);
+                    case Right -> new Node(currentHeadNode.x + 1, currentHeadNode.y);
+                };
                 rope.remove(0);
                 rope.add(0, newHeadNode);
                 for (int nodeIndex = 1 ; nodeIndex < rope.size() ; nodeIndex++) {
@@ -73,84 +72,64 @@ public class RopeBridge {
             Up, Down, Left, Right
         }
 
-        private static class Move {
-            final int numSteps;
-            final Direction direction;
-
-            public Move(int numSteps, Direction direction) {
-                this.numSteps = numSteps;
-                this.direction = direction;
-            }
+        private record Move(int numSteps, Direction direction) {
         }
 
-        private static class Node {
-            final int x, y;
-            public Node(int x, int y) {
-                this.x = x;
-                this.y = y;
-            }
+        private record Node(int x, int y) {
 
-            public boolean isAdjacent(Node node) {
-                return (Math.abs(x - node.x) <= 1) && (Math.abs(y - node.y) <= 1);
-            }
-
-            public Node getTailForHead(Node headNode) {
-                if(!isAdjacent(headNode)) {
-                    int newTailNodeX = Integer.MAX_VALUE, newTailNodeY = Integer.MAX_VALUE;
-
-                    if (x - headNode.x > 1) {
-                        newTailNodeX = x - 1;
-                    } else if (headNode.x - x > 1) {
-                        newTailNodeX = x + 1;
+            public boolean isNotAdjacent(Node node) {
+                        return (Math.abs(x - node.x) > 1) || (Math.abs(y - node.y) > 1);
                     }
 
-                    if (y - headNode.y > 1) {
-                        newTailNodeY = y - 1;
-                    } else if (headNode.y - y > 1) {
-                        newTailNodeY = y + 1;
+                    public Node getTailForHead(Node headNode) {
+                        if (isNotAdjacent(headNode)) {
+                            int newTailNodeX = Integer.MAX_VALUE, newTailNodeY = Integer.MAX_VALUE;
+
+                            if (x - headNode.x > 1) {
+                                newTailNodeX = x - 1;
+                            } else if (headNode.x - x > 1) {
+                                newTailNodeX = x + 1;
+                            }
+
+                            if (y - headNode.y > 1) {
+                                newTailNodeY = y - 1;
+                            } else if (headNode.y - y > 1) {
+                                newTailNodeY = y + 1;
+                            }
+
+                            if (newTailNodeX == Integer.MAX_VALUE) {
+                                newTailNodeX = headNode.x;
+                            }
+                            if (newTailNodeY == Integer.MAX_VALUE) {
+                                newTailNodeY = headNode.y;
+                            }
+
+                            final Node newTailNode = new Node(newTailNodeX, newTailNodeY);
+                            if (isNotAdjacent(newTailNode)) {
+                                System.out.println("Error finding tail for " + headNode + ". " + newTailNode + " is incorrect");
+                            }
+                            return newTailNode;
+                        } else {
+                            return this;
+                        }
                     }
 
-                    if (newTailNodeX == Integer.MAX_VALUE) {
-                        newTailNodeX = headNode.x;
-                    }
-                    if (newTailNodeY == Integer.MAX_VALUE) {
-                        newTailNodeY = headNode.y;
+                    @Override
+                    public String toString() {
+                        return x + "," + y;
                     }
 
-                    final Node newTailNode = new Node(newTailNodeX, newTailNodeY);
-                    if (!isAdjacent(newTailNode)) {
-                        System.out.println("Error finding tail for " + headNode + ". " + newTailNode + " is incorrect");
+                    @Override
+                    public boolean equals(Object o) {
+                        if (this == o) return true;
+                        if (o == null || getClass() != o.getClass()) return false;
+
+                        Node node = (Node) o;
+
+                        if (x != node.x) return false;
+                        return y == node.y;
                     }
-                    return newTailNode;
-                } else {
-                    return this;
-                }
-            }
 
-            @Override
-            public String toString() {
-                return x + "," + y;
-            }
-
-            @Override
-            public boolean equals(Object o) {
-                if (this == o) return true;
-                if (o == null || getClass() != o.getClass()) return false;
-
-                Node node = (Node) o;
-
-                if (x != node.x) return false;
-                if (y != node.y) return false;
-
-                return true;
-            }
-
-            @Override
-            public int hashCode() {
-                int result = x;
-                result = 31 * result + y;
-                return result;
-            }
         }
     }
 }

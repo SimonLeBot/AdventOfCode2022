@@ -13,7 +13,7 @@ public class Decoding {
         final List<Character> input = Files.readAllLines(Paths.get("src/day6/input.txt"))
                 .get(0).chars().mapToObj(c -> (char) c).collect(Collectors.toList());
         int index = 0;
-        while(!areLastXCharactersDifferent(input, index, NUM_DISTINCT_CHARACTERS)) {
+        while(!areLastXCharactersDifferent(input, index)) {
             index++;
         }
         if (index + NUM_DISTINCT_CHARACTERS < input.size()) {
@@ -23,9 +23,9 @@ public class Decoding {
         }
     }
 
-    private static boolean areLastXCharactersDifferent(List<Character> input, int currentIndex, int numDifferentCharacters) {
-        return input.subList(currentIndex, currentIndex + numDifferentCharacters).stream()
+    private static boolean areLastXCharactersDifferent(List<Character> input, int currentIndex) {
+        return input.subList(currentIndex, currentIndex + Decoding.NUM_DISTINCT_CHARACTERS).stream()
                 .distinct()
-                .count() == numDifferentCharacters;
+                .count() == Decoding.NUM_DISTINCT_CHARACTERS;
     }
 }

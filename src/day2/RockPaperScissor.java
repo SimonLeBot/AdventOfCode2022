@@ -22,13 +22,10 @@ public class RockPaperScissor {
         public Game(String theirShape, String result) {
             this.theirShape = getShape(theirShape);
             switch (result) {
-                case "X":
-                    scorePoints = 0; break;
-                case "Y":
-                    scorePoints = 3; break;
-                case "Z":
-                    scorePoints = 6; break;
-                default: throw new IllegalArgumentException("Incorrect input");
+                case "X" -> scorePoints = 0;
+                case "Y" -> scorePoints = 3;
+                case "Z" -> scorePoints = 6;
+                default -> throw new IllegalArgumentException("Incorrect input");
             }
             this.myShape = getShapeToAchieveResult();
         }
@@ -37,21 +34,39 @@ public class RockPaperScissor {
             switch (theirShape) {
                 case Rock:
                     switch (scorePoints) {
-                        case 6: return Shape.Paper;
-                        case 3: return Shape.Rock;
-                        case 0: return Shape.Scissor;
+                        case 6 -> {
+                            return Shape.Paper;
+                        }
+                        case 3 -> {
+                            return Shape.Rock;
+                        }
+                        case 0 -> {
+                            return Shape.Scissor;
+                        }
                     }
                 case Paper:
                     switch (scorePoints) {
-                        case 6: return Shape.Scissor;
-                        case 3: return Shape.Paper;
-                        case 0: return Shape.Rock;
+                        case 6 -> {
+                            return Shape.Scissor;
+                        }
+                        case 3 -> {
+                            return Shape.Paper;
+                        }
+                        case 0 -> {
+                            return Shape.Rock;
+                        }
                     }
                 case Scissor:
                     switch (scorePoints) {
-                        case 6: return Shape.Rock;
-                        case 3: return Shape.Scissor;
-                        case 0: return Shape.Paper;
+                        case 6 -> {
+                            return Shape.Rock;
+                        }
+                        case 3 -> {
+                            return Shape.Scissor;
+                        }
+                        case 0 -> {
+                            return Shape.Paper;
+                        }
                     }
             }
             throw new IllegalArgumentException("Incorrect input");
@@ -63,19 +78,12 @@ public class RockPaperScissor {
     }
 
     private static Shape getShape(String shape) {
-        switch (shape) {
-            case "A":
-            case "X" :
-                return Shape.Rock;
-            case "B":
-            case "Y" :
-                return Shape.Paper;
-            case "C":
-            case "Z" :
-                return Shape.Scissor;
-            default:
-                throw new IllegalArgumentException(shape + " is not a valid input");
-        }
+        return switch (shape) {
+            case "A", "X" -> Shape.Rock;
+            case "B", "Y" -> Shape.Paper;
+            case "C", "Z" -> Shape.Scissor;
+            default -> throw new IllegalArgumentException(shape + " is not a valid input");
+        };
     }
 
     private enum Shape {

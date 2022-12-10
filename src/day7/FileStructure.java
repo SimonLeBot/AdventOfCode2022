@@ -103,9 +103,9 @@ public class FileStructure {
 
 
     private static class Directory {
-        List<Directory> directories;
-        List<File> files;
-        String name;
+        final List<Directory> directories;
+        final List<File> files;
+        final String name;
 
         public Directory(String name) {
             this.name = name;
@@ -132,7 +132,7 @@ public class FileStructure {
         public int getSize() {
             int directorySize = 0;
             for (File file : files) {
-                directorySize += file.getSize();
+                directorySize += file.size();
             }
             for (Directory directory : directories) {
                 directorySize += directory.getSize();
@@ -149,25 +149,14 @@ public class FileStructure {
         }
     }
 
-    private static class File {
-        String name;
-        int size;
-
-        public File(int size, String name) {
-            this.name = name;
-            this.size = size;
-        }
-
-        public int getSize() {
-            return size;
-        }
+    private record File(int size, String name) {
 
         @Override
-        public String toString() {
-            return "File{" +
-                    "name='" + name + '\'' +
-                    ", size=" + size +
-                    '}';
+            public String toString() {
+                return "File{" +
+                        "name='" + name + '\'' +
+                        ", size=" + size +
+                        '}';
+            }
         }
-    }
 }
